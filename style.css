@@ -1,0 +1,436 @@
+/*-----------------*/
+/*---           ---*/
+/*-----------------*/
+
+
+
+/*commentaire*/
+
+
+
+/* GENERAL */
+
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&display=swap');
+
+*,
+::before,
+::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  --primaryColor1: #f1f1f1;
+  --primaryColor2: #1068b6;
+  --primaryColor3: #ec60a6;
+  --primaryColor50: #2c3e50;
+}
+
+
+
+.centerText {
+  text-align: center;
+}
+
+.d-flex {
+  display: flex;
+  /* flex-direction: row; */
+}
+
+.d-flex-center {
+  display: flex;
+  /* flex-direction: row; */
+  justify-content: center;
+  align-items: center;
+}
+
+.d-flex-colc {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.d-flex-cols {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+.d-flex-rowc {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.d-flex-rows {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+
+/*
+h1 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 0.8em;
+}
+
+h2 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 0.8em;
+}
+
+h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  line-height: 0.8em;
+}
+
+h4 {
+  font-size: 1.1rem;
+  font-weight: 400;
+  line-height: 0.8em;
+}
+
+
+p {
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 0.8em;
+  color: darkblue;
+}
+
+*/
+
+a {
+  text-decoration: none;
+}
+
+li {
+  list-style: none;
+}
+
+
+
+/* <!---------------------------- BODY ----------------------------> */
+
+body {
+  background-color: white;
+  color: var(--primaryColor1);
+  font-family: Arial, Helvetica, sans-serif;
+  /* -webkit-font-smoothing: antialiased; */
+  /* -moz-osx-font-smoothing: grayscale; */
+  background: linear-gradient(45deg, rgb(70, 70, 70), rgb(20, 20, 20));
+  height: 100vh;
+  max-width: 1400px;
+  margin: 0 auto;
+  box-shadow: 0px 0px 10px 1px red;
+  /* word-break: break-word; */
+  /* cursor: pointer; */
+}
+
+.container {
+  width: 800px;
+  height: 600px;
+  background: linear-gradient(45deg, var(--primaryColor2), var(--primaryColor3));
+  display: grid;
+  /* grid-template: 100px 300px 100px 100px/100px 100px 100px 100px 100px 100px 100px 100px; */
+  grid-template: 100px 300px 100px 100px/ repeat(8, 100px);
+  /* margin: 100px auto 100px 0; */
+  margin: 100px auto 0;
+  position: relative;
+  box-shadow: 0px 0px 10px 1px var(--primaryColor1);
+  border: 1px solid var(--primaryColor1);
+}
+
+h1 {
+  grid-area: 1/1 / 2/-1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.bloc-logo-info {
+  grid-area: 2/1 / 3/-1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.bloc-logo {
+  width: 50%;
+}
+
+.bloc-logo img {
+  width: 100%;
+  height: auto;
+}
+
+.bloc-info {
+  width: 50%;
+}
+
+.bloc-info .temps {
+  font-size: 35px;
+  color: darkblue;
+}
+
+.bloc-info .temps::first-letter {
+  text-transform: uppercase;
+}
+
+.bloc-info .temperature {
+  font-size: 60px;
+  color: violet;
+  margin: 10px;
+}
+
+.bloc-info .localisation {
+  font-size: 30px;
+  color: pink;
+  /* word-wrap: break-word; */
+  word-break: break-word;
+}
+
+.heure-bloc-prevision {
+  grid-area: 3/1 / 4/-1;
+}
+
+.jour-bloc-prevision {
+  grid-area: 4/1 / 5/-1;
+}
+
+.heure-bloc-prevision,
+.jour-bloc-prevision {
+  display: grid;
+  /* grid-template: 100px/ repeat(7, 100px); */
+  grid-template: 100px/ repeat(7, 1fr);
+}
+
+.bloc-heure,
+.bloc-jour {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  font-style: 21px;
+  border-top: 1px solid var(--primaryColor1);
+}
+
+.bloc-heure:not(:last-child),
+.bloc-jour:not(:last-child) {
+  border-right: 1px solid var(--primaryColor1);
+}
+
+.bloc-heure p,
+.bloc-jour p {
+  margin: 5px;
+}
+
+
+
+/* __________________________________________*/
+/* _____________ animation _________________ */
+/* _________________________________________ */
+
+.messageRetour {
+  color: red;
+  color: var(--primaryColor3);
+  opacity: 55%;
+  animation: insiste 800ms ease 6;
+}
+
+@keyframes insiste {
+  0% {
+    opacity: 100%;
+    transform: scale(1.04);
+  }
+
+  25% {
+    opacity: 90%;
+    transform: scale(1.02);
+  }
+
+  50% {
+    opacity: 80%;
+    transform: scale(1);
+  }
+
+  75% {
+    opacity: 90%;
+    transform: scale(1.02);
+  }
+
+  100% {
+    opacity: 100%;
+    transform: scale(1.04);
+  }
+}
+
+/* _________________________________________________ */
+/* _____________ responsive - @media _______________ */
+/* _________________________________________________ */
+
+
+/*
+
+
+@media all and (max-width: 300px)
+
+// <300w//
+  {
+
+  a,
+  h2 {
+    font-size: 7vw;
+  }
+
+  h1 {
+    font-size: 8vw;
+  }
+
+  p {
+    font-size: 6vw;
+  }
+
+
+}
+
+@media all and (min-width: 300px) and (max-width: 400px)
+
+// 300-400w //
+  {
+
+  a,
+  h2 {
+    font-size: 6vw;
+  }
+
+  h1 {
+    font-size: 7vw;
+  }
+
+  p {
+    font-size: 5vw;
+  }
+}
+
+@media all and (min-width: 400px) and (max-width: 500px)
+
+// 400-500w //
+  {
+
+  a,
+  h2 {
+    font-size: 5vw;
+    color: darkviolet;
+  }
+
+  h1 {
+    font-size: 6vw;
+  }
+
+  p {
+    font-size: 4vw;
+  }
+}
+
+@media all and (min-width: 500px) and (max-width: 600px)
+
+// 500-600w //
+  {
+
+  a,
+  h2 {
+    font-size: 3.8vw;
+  }
+
+  h1 {
+    font-size: 4.8vw;
+  }
+
+  p {
+    font-size: 2.8vw;
+  }
+}
+
+
+@media all and (min-width: 600px) and (max-width: 900px)
+
+// entre 600 et 900px //
+  {
+
+  a,
+  h2 {
+    font-size: 3.5vw;
+  }
+
+  h1 {
+    font-size: 4.5vw;
+  }
+
+  p {
+    font-size: 2.5vw;
+  }
+}
+}
+
+@media all and (min-width: 900px) and (max-width: 1400px)
+
+// 900-1400w //
+  {
+
+  a,
+  h2 {
+    font-size: 3.2vw;
+  }
+
+  h1 {
+    font-size: 4.2vw;
+  }
+
+  p {
+    font-size: 2.2vw;
+  }
+}
+
+@media all and (min-width: 1400px) and (max-width: 2000px)
+
+// 1400-2000w //
+  {
+
+  a,
+  h2 {
+    font-size: 3vw;
+  }
+
+  h1 {
+    font-size: 4vw;
+  }
+
+  p {
+    font-size: 2vw;
+  }
+}
+
+@media all and (min-width: 2000px)
+
+// >2000w //
+  {
+
+  a,
+  h2 {
+    font-size: 2vw;
+  }
+
+  h1 {
+    font-size: 3vw;
+  }
+
+  p {
+    font-size: 1vw;
+  }
+}
+
+
+*/

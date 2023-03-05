@@ -178,9 +178,10 @@ h1 {
   width: 50%;
 }
 
-.bloc-info .temps {
+.bloc-info .tempsCode {
   font-size: 35px;
-  color: darkblue;
+  color: pink;
+  word-break: break-word;
 }
 
 .bloc-info .temps::first-letter {
@@ -190,15 +191,25 @@ h1 {
 .bloc-info .temperature {
   font-size: 60px;
   color: violet;
-  margin: 10px;
+  margin: 10px auto;
 }
 
 .bloc-info .vitesseVent {
-  font-size: 30px;
-  color: pink;
+  font-size: 50px;
+  color: lightpink;
   /* word-wrap: break-word; */
   word-break: break-word;
+  margin: 10px auto 20px;
 }
+
+.probaPluie,
+.indexUV,
+.leverCoucher {
+  color: wheat;
+  font-size: 30px;
+  margin: 10px auto;
+}
+
 
 .heure-bloc-prevision {
   grid-area: 4/1 / 5/-1;
@@ -230,9 +241,9 @@ h1 {
   border-top: 1px solid var(--primaryColor1);
 }
 
-.bloc-jour {
+/* .bloc-jour {
   border-bottom: 1px solid var(--primaryColor1);
-}
+} */
 
 .bloc-heure:not(:last-child),
 .bloc-jour:not(:last-child) {

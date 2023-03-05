@@ -40,10 +40,15 @@ const WEATHERCODETABLE = {
 };
 
 const zone = document.querySelector(".zone");
-const temps = document.querySelector(".temps");
-const temperature = document.querySelector(".temperature");
 // const localisation = document.querySelector(".localisation");
+const tempsCode = document.querySelector(".tempsCode");
+const temperature = document.querySelector(".temperature");
 const vitesseVent = document.querySelector(".vitesseVent");
+
+const probaPluie = document.querySelector(".probaPluie");
+const indexUV = document.querySelector(".indexUV");
+const leverCoucher = document.querySelector(".leverCoucher");
+
 const heure = document.querySelectorAll(".heure-nom-prevision");
 const tempsPourHeure = document.querySelectorAll(".heure-prevision-valeur");
 const joursDiv = document.querySelectorAll(".jour-prevision-nom");
@@ -117,14 +122,24 @@ function appelAPI(long, lat) {
       console.log("current_weather", getAPI.current_weather);
       console.log("daily", getAPI.daily);
 
-      let weathercode = getAPI.current_weather.weathercode;
-      temps.innerText = WEATHERCODETABLE[weathercode];
+      zone.textContent = getAPI.timezone;
+      let leWeathercode = getAPI.current_weather.weathercode;
+      console.log("leWeathercode", leWeathercode);
+      tempsCode.innerText = WEATHERCODETABLE[leWeathercode];
       temperature.innerText =
         Math.trunc(getAPI.current_weather.temperature) + " °C";
       vitesseVent.innerText =
         "Vent à " + Math.trunc(getAPI.current_weather.windspeed) + " km/h";
-      // localisation.textContent = getAPI.timezone;
-      zone.textContent = getAPI.timezone;
+      probaPluie.innerText =
+        "probaPluie " +
+        Math.trunc(getAPI.daily.precipitation_probability_max[0]) +
+        "% max";
+      indexUV.innerText = "indexUV " + getAPI.daily.uv_index_max[0] + " max";
+      leverCoucher.innerText =
+        "Lever: " +
+        getAPI.daily.sunrise[0].slice(12, 16) +
+        " | Coucher: " +
+        getAPI.daily.sunset[0].slice(12, 16);
 
       // on s'occupe des heures
       let heureActuelle = new Date().getHours();
@@ -164,7 +179,7 @@ function appelAPI(long, lat) {
         )}-${Math.trunc(getAPI.daily.temperature_2m_max[index + 1])}°C`;
       }
       for (let index = 0; index < pluieJoursDiv.length; index++) {
-        pluieJoursDiv[index].innerText = `pluie:${
+        pluieJoursDiv[index].innerText = `pluie: ${
           getAPI.daily.precipitation_probability_max[index + 1]
         }%`;
       }

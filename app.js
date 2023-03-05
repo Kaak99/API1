@@ -1,14 +1,13 @@
 //  .......  tests à retirer  ........ //
 console.log(` --------> app.js`);
-/*consoleAPI : https://open-meteo.com/en/docs#api-documentation */
-/*     `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${long}&hourly=temperature_2m` */
-//  .......  const  ........ //
 
-//const CLEAPI = `78a1922f1705234d07f49c9ba55e7602`;
-let getAPI = "";
-const temps = document.querySelector(".temps");
-const temperature = document.querySelector(".temperature");
-const localisation = document.querySelector(".localisation");
+//  .......  IMPORT  ........ //
+
+import tabJoursEnOrdre from "./modules/gestionTemps.js";
+//console.log("semaine from app.js:", tabJoursEnOrdre);
+
+// .......... CONSTANTES ..........  //
+
 const WEATHERCODETABLE = {
   0: "Ciel clair",
   1: "Plutôt dégagé",
@@ -30,17 +29,30 @@ const WEATHERCODETABLE = {
   73: "Chute de neige modérée",
   75: "Chute de neige intense",
   77: "Grains de neige",
-  80: "Averses(pluie)légères",
-  81: "Averses(pluie)modérées",
-  82: "Averses(pluie)violentes",
+  80: "Averses légères",
+  81: "Averses modérées",
+  82: "Averses violentes",
   85: "Averses de neige légères",
   86: "Averses de neige intenses",
   95: "Orage",
   96: "Orage + grêle légère",
   99: "Orage + grêle forte",
 };
-//const aHTML = document.querySelector('.class');
-//aHTML.innerHTML = `   `
+
+const zone = document.querySelector(".zone");
+const temps = document.querySelector(".temps");
+const temperature = document.querySelector(".temperature");
+// const localisation = document.querySelector(".localisation");
+const vitesseVent = document.querySelector(".vitesseVent");
+const heure = document.querySelectorAll(".heure-nom-prevision");
+const tempsPourHeure = document.querySelectorAll(".heure-prevision-valeur");
+const joursDiv = document.querySelectorAll(".jour-prevision-nom");
+const codeJoursDiv = document.querySelectorAll(".jour-prevision-code");
+const tempJoursDiv = document.querySelectorAll(".jour-prevision-temp");
+const pluieJoursDiv = document.querySelectorAll(".jour-prevision-pluie");
+const ventJoursDiv = document.querySelectorAll(".jour-prevision-vent");
+
+let getAPI = "";
 
 //  .......  code  ........ //
 
@@ -69,78 +81,99 @@ if (navigator.geolocation) {
 
 //  .......  fonctions  ........ //
 
-//afficher warning
 function appelAPI(long, lat) {
-  console.log(long);
-  console.log(lat);
+  console.log("long=", long, " || lat=", lat);
   //console.log(` ${a} ${b} `);
   // fetch(
   //   `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${long}&exclude=minutely&lang=fr&units=metric&appid=${CLEAPI}`
   // )
+
+  //bien vérifier &current_weather=true&timezone=auto
   fetch(
-    `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${long}&current_weather=true&hourly=temperature_2m,relativehumidity_2m,apparent_temperature,precipitation_probability,precipitation,weathercode,cloudcover,visibility,windspeed_10m,winddirection_10m,windgusts_10m&daily=weathercode,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,precipitation_sum&timezone=auto`
+    `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${long}&hourly=temperature_2m,apparent_temperature,precipitation_probability,weathercode,visibility,windspeed_10m,winddirection_10m&daily=weathercode,temperature_2m_max,temperature_2m_min,apparent_temperature_max,apparent_temperature_min,sunrise,sunset,uv_index_max,precipitation_probability_max,windspeed_10m_max&current_weather=true&timezone=auto`
   )
     .then((reponse) => {
-      console.log(reponse);
+      //console.log(reponse);
       return reponse.json();
     })
     .then((data) => {
       getAPI = data;
       console.log(getAPI);
-      console.log(
-        "lat=",
-        getAPI.latitude,
-        "long=",
-        getAPI.longitude,
-        "elevation=",
-        getAPI.elevation
-      );
-
-      console.log(
-        "timezone",
-        getAPI.timezone,
-        "timezone-abbrev",
-        getAPI.timezone_abbreviation
-      );
+      // console.log(
+      //   "lat=",
+      //   getAPI.latitude,
+      //   "long=",
+      //   getAPI.longitude,
+      //   "elevation=",
+      //   getAPI.elevation
+      // );
+      // console.log(
+      //   "timezone",
+      //   getAPI.timezone,
+      //   "timezone-abbrev",
+      //   getAPI.timezone_abbreviation
+      // );
       console.log("hourly", getAPI.hourly, "hourly_units", getAPI.hourly_units);
       console.log("current_weather", getAPI.current_weather);
+      console.log("daily", getAPI.daily);
 
       let weathercode = getAPI.current_weather.weathercode;
       temps.innerText = WEATHERCODETABLE[weathercode];
       temperature.innerText =
-        Math.trunc(getAPI.current_weather.temperature) + " °";
+        Math.trunc(getAPI.current_weather.temperature) + " °C";
+      vitesseVent.innerText =
+        "Vent à " + Math.trunc(getAPI.current_weather.windspeed) + " km/h";
+      // localisation.textContent = getAPI.timezone;
+      zone.textContent = getAPI.timezone;
 
-      localisation.textContent = getAPI.timezone;
-    });
+      // on s'occupe des heures
+      let heureActuelle = new Date().getHours();
+      for (let index = 0; index < 6; index++) {
+        let heureIncr = heureActuelle + 4 + index * 4;
+        if (heureIncr > 24) {
+          heure[index].innerText = `${heureIncr - 24} h`;
+        } else if (heureIncr == 24) {
+          heure[index].innerText = `00 h`;
+        } else {
+          heure[index].innerText = `${heureIncr} h`;
+        }
+      }
+      for (let index = 0; index < tempsPourHeure.length; index++) {
+        tempsPourHeure[index].innerText = `${Math.trunc(
+          getAPI.hourly.temperature_2m[index * 4]
+        )} °C`;
+      }
+
+      // on s'occupe des jours
+      //console.log("daily", getAPI.daily);
+      for (let index = 0; index < tabJoursEnOrdre.length; index++) {
+        joursDiv[index].innerText = tabJoursEnOrdre[index].slice(0, 3);
+      } //affiche que 3 1eres lettres des jours
+
+      for (let index = 0; index < codeJoursDiv.length; index++) {
+        codeJoursDiv[index].innerText =
+          WEATHERCODETABLE[getAPI.daily.weathercode[index]];
+
+        // codeJoursDiv[index].innerText = `${
+        //   getAPI.daily.temperature_2m_min[index + 1]
+        // }`;
+      }
+      for (let index = 0; index < tempJoursDiv.length; index++) {
+        tempJoursDiv[index].innerText = `${Math.trunc(
+          getAPI.daily.temperature_2m_min[index + 1]
+        )}-${Math.trunc(getAPI.daily.temperature_2m_max[index + 1])}°C`;
+      }
+      for (let index = 0; index < pluieJoursDiv.length; index++) {
+        pluieJoursDiv[index].innerText = `pluie:${
+          getAPI.daily.precipitation_probability_max[index + 1]
+        }%`;
+      }
+      for (let index = 0; index < ventJoursDiv.length; index++) {
+        ventJoursDiv[index].innerText = `vent:${Math.trunc(
+          getAPI.daily.windspeed_10m_max[index + 1]
+        )}km/h max`;
+      }
+    }); //fin du then
 }
-
-/*
-https://open--meteo-com.translate.goog/en/docs?_x_tr_sl=auto&_x_tr_tl=fr&_x_tr_hl=fr&_x_tr_pto=wapp
-
-En cas de succès, un objet JSON sera renvoyé.
-
-{
-  "latitude": 52.52,
-  "longitude": 13.419,
-  "elevation": 44.812,
-  "generationtime_ms": 2.2119,
-  "utc_offset_seconds": 0,
-  "timezone": "Europe/Berlin",
-  "timezone_abbreviation": "CEST",
-  "hourly": {
-    "time": ["2022-07-01T00:00", "2022-07-01T01:00", "2022-07-01T02:00", ...],
-    "temperature_2m": [13, 12.7, 12.7, 12.5, 12.5, 12.8, 13, 12.9, 13.3, ...]
-  },
-  "hourly_units": {
-    "temperature_2m": "°C"
-  },
-  "current_weather": {
-    "time": "2022-07-01T09:00",
-    "temperature": 13.3,
-    "weathercode": 3,
-    "windspeed": 10.3,
-    "winddirection": 262
-  }
-}
-
-*/
+//  let weathercode = getAPI.current_weather.weathercode;
+//       temps.innerText = WEATHERCODETABLE[weathercode];

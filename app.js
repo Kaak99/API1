@@ -8,6 +8,36 @@ import tabJoursEnOrdre from "./modules/gestionTemps.js";
 
 // .......... CONSTANTES ..........  //
 
+const WEATHERsvgTABLE = {
+  0: "clair.svg",
+  1: "solnuag.svg",
+  2: "solnuag.svg",
+  3: "nuages.svg",
+  45: "nuages.svg",
+  48: "nuages.svg",
+  51: "pluiefine.svg",
+  53: "pluiefine.svg",
+  55: "pluieforte",
+  56: "pluiefine.svg",
+  57: "pluieforte.svg",
+  61: "pluiefine.svg",
+  63: "pluieforte.svg",
+  65: "pluiefine.svg",
+  66: "pluiefine.svg",
+  67: "pluieforte.svg",
+  71: "neige.svg",
+  73: "neige.svg",
+  75: "neige.svg",
+  77: "neige.svg",
+  80: "pluiefine.svg",
+  81: "pluieforte.svg",
+  82: "pluieforte.svg",
+  85: "neige.svg",
+  86: "neige.svg",
+  95: "orage.svg",
+  96: "orage.svg",
+  99: "orage.svg",
+};
 const WEATHERCODETABLE = {
   0: "Ciel clair",
   1: "Plutôt dégagé",
@@ -56,8 +86,14 @@ const codeJoursDiv = document.querySelectorAll(".jour-prevision-code");
 const tempJoursDiv = document.querySelectorAll(".jour-prevision-temp");
 const pluieJoursDiv = document.querySelectorAll(".jour-prevision-pluie");
 const ventJoursDiv = document.querySelectorAll(".jour-prevision-vent");
+const imageIcon = document.querySelector(".logo-meteo");
+const chargementContainer = document.querySelector(".overlay-icone-chargement");
 
-let getAPI = "";
+let getAPI = ""; //résultat requete API
+let leWeathercode = 0; //contiendra code du temps(weather) actuel (weathercode)
+let heureActuelle = ""; //contiendra heure en cours
+let leverSoleil;
+let coucherSoleil;
 
 //  .......  code  ........ //
 
@@ -88,61 +124,56 @@ if (navigator.geolocation) {
 
 function appelAPI(long, lat) {
   console.log("long=", long, " || lat=", lat);
-  //console.log(` ${a} ${b} `);
-  // fetch(
-  //   `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${long}&exclude=minutely&lang=fr&units=metric&appid=${CLEAPI}`
-  // )
+
+  const urlAPI = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${long}&hourly=temperature_2m,apparent_temperature,precipitation_probability,weathercode,visibility,windspeed_10m,winddirection_10m&daily=weathercode,temperature_2m_max,temperature_2m_min,apparent_temperature_max,apparent_temperature_min,sunrise,sunset,uv_index_max,precipitation_probability_max,windspeed_10m_max&current_weather=true&timezone=auto`;
 
   //bien vérifier &current_weather=true&timezone=auto
-  fetch(
-    `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${long}&hourly=temperature_2m,apparent_temperature,precipitation_probability,weathercode,visibility,windspeed_10m,winddirection_10m&daily=weathercode,temperature_2m_max,temperature_2m_min,apparent_temperature_max,apparent_temperature_min,sunrise,sunset,uv_index_max,precipitation_probability_max,windspeed_10m_max&current_weather=true&timezone=auto`
-  )
+
+  fetch(urlAPI)
     .then((reponse) => {
       //console.log(reponse);
       return reponse.json();
     })
     .then((data) => {
       getAPI = data;
-      console.log(getAPI);
-      // console.log(
-      //   "lat=",
-      //   getAPI.latitude,
-      //   "long=",
-      //   getAPI.longitude,
-      //   "elevation=",
-      //   getAPI.elevation
-      // );
-      // console.log(
-      //   "timezone",
-      //   getAPI.timezone,
-      //   "timezone-abbrev",
-      //   getAPI.timezone_abbreviation
-      // );
-      console.log("hourly", getAPI.hourly, "hourly_units", getAPI.hourly_units);
-      console.log("current_weather", getAPI.current_weather);
-      console.log("daily", getAPI.daily);
+      // console.log(getAPI);
+      // console.log("hourly", getAPI.hourly, "hourly_units", getAPI.hourly_units);
+      // console.log("current_weather", getAPI.current_weather);
+      // console.log("daily", getAPI.daily);
 
+      //affiche temp actuel
+      //(timezone+codeweather +temperature+vitesse vent+probaPluie+UV+sunrise/sunset)
       zone.textContent = getAPI.timezone;
-      let leWeathercode = getAPI.current_weather.weathercode;
+
+      leWeathercode = getAPI.current_weather.weathercode;
       console.log("leWeathercode", leWeathercode);
       tempsCode.innerText = WEATHERCODETABLE[leWeathercode];
       temperature.innerText =
         Math.trunc(getAPI.current_weather.temperature) + " °C";
+
       vitesseVent.innerText =
         "Vent à " + Math.trunc(getAPI.current_weather.windspeed) + " km/h";
       probaPluie.innerText =
-        "probaPluie " +
+        "Probabilité Pluie " +
         Math.trunc(getAPI.daily.precipitation_probability_max[0]) +
         "% max";
-      indexUV.innerText = "indexUV " + getAPI.daily.uv_index_max[0] + " max";
+      indexUV.innerText = "Index UV : " + getAPI.daily.uv_index_max[0] + " max";
+      leverSoleil = getAPI.daily.sunrise[0];
+      coucherSoleil = getAPI.daily.sunset[0];
+      console.log(
+        "leverSoleil=",
+        leverSoleil,
+        "|coucherSoleil=",
+        coucherSoleil
+      );
       leverCoucher.innerText =
-        "Lever: " +
-        getAPI.daily.sunrise[0].slice(12, 16) +
-        " | Coucher: " +
-        getAPI.daily.sunset[0].slice(12, 16);
+        "Lever " +
+        leverSoleil.slice(12, 16) +
+        "☀️Coucher " +
+        coucherSoleil.slice(12, 16);
 
       // on s'occupe des heures
-      let heureActuelle = new Date().getHours();
+      heureActuelle = new Date().getHours();
       for (let index = 0; index < 6; index++) {
         let heureIncr = heureActuelle + 4 + index * 4;
         if (heureIncr > 24) {
@@ -188,7 +219,23 @@ function appelAPI(long, lat) {
           getAPI.daily.windspeed_10m_max[index + 1]
         )}km/h max`;
       }
+
+      //affichage de l'icone du temps selon code et selon jour/nuit
+      // console.log("leverSoleil", leverSoleil.slice(11, 13));
+      // console.log("coucherSoleil", coucherSoleil.slice(11, 13));
+      if (
+        heureActuelle > leverSoleil.slice(11, 13) ||
+        heureActuelle < coucherSoleil.slice(11, 13)
+      ) {
+        imageIcon.src = `./ressources/jour/${
+          WEATHERsvgTABLE[getAPI.current_weather.weathercode]
+        }`;
+      } else {
+        imageIcon.src = `./ressources/nuit/${
+          WEATHERsvgTABLE[getAPI.current_weather.weathercode]
+        }`;
+      }
+
+      chargementContainer.classList.add("disparition");
     }); //fin du then
 }
-//  let weathercode = getAPI.current_weather.weathercode;
-//       temps.innerText = WEATHERCODETABLE[weathercode];

@@ -1,18 +1,21 @@
-Application meteo
+# Application meteo
 
 html, css, vanilla js
 
-Utilisation de l'API gratuite https://open-meteo.com/
+## Utilisation de l'API gratuite https://open-meteo.com/
 
 Rajouter &current_weather=true dans la requete pour avoir accès à la météo du moment ("time","temperature","weathercode","windspeed","winddirection")
 
-Doc : https://open-meteo.com/en/docs
+## Doc : https://open-meteo.com/en/docs
 
-Doc fr (googme translate) :
-https://open--meteo-com.translate.goog/en/docs?_x_tr_sl=auto&_x_tr_tl=fr&_x_tr_hl=fr&_x_tr_pto=wapp
+Doc fr (google translate) :
+[openmeteo_doc-fr](https://open--meteo-com.translate.goog/en/docs?_x_tr_sl=auto&_x_tr_tl=fr&_x_tr_hl=fr&_x_tr_pto=wapp)
 
-En cas de succès, un objet JSON sera renvoyé.
+---
 
+### En cas de succès, un objet JSON sera renvoyé.
+
+```
 {
 "latitude": 52.52,
 "longitude": 13.419,
@@ -36,51 +39,79 @@ En cas de succès, un objet JSON sera renvoyé.
 "winddirection": 262
 }
 }
+```
 
-les erreurs :
+### les erreurs :
+
 En cas d'erreur, par exemple un paramètre d'URL n'est pas correctement spécifié, un objet d'erreur JSON est renvoyé avec un code d'état HTTP 400.
 
+```
 {
 "error": true,
 "reason": "Cannot initialize WeatherVariable from invalid String value tempeture_2m for key hourly"
 }
+```
 
-Résumé des parametres (Paramètre Format Description ) :
+---
 
-latitude, Longitude (Point flottant): WGS84 du centre de la cellule de grille météo qui a été utilisée pour générer cette prévision. Cette coordonnée peut être jusqu'à 5 km.
+### Résumé des parametres (Paramètre Format Description ) :
 
-elevation=élévation (Point flottant) : L'altitude d'un modèle d'élévation numérique de 90 mètres.
+#### latitude, Longitude (Point flottant):
 
-generationtime_ms (Point flottant) Temps de génération de la prévision météo en millisecondes
+WGS84 du centre de la cellule de grille météo qui a été utilisée pour générer cette prévision. Cette coordonnée peut être jusqu'à 5 km.
 
-utc_offset_seconds (Entier) Décalage de fuseau horaire appliqué à partir du&fuseau horaire=paramètre.
+#### elevation=élévation (Point flottant) :
 
-timezone=fuseau horaire, timezone_abbreviation=timezone_abbreviation (Chaîne) Identifiant de fuseau horaire (par exempleEurope/Berlin) et l'abréviation (par exempleCEST)
+L'altitude d'un modèle d'élévation numérique de 90 mètres.
 
-hourly=toutes les heures (Objet) Pour chaque variable météo sélectionnée, les données seront renvoyées sous forme de tableau à virgule flottante. De plus untempstableau sera renvoyé avec les horodatages ISO8601.
+#### generationtime_ms (Point flottant)
 
-hourly_units=unités_horaires (Objet) Pour chaque variable météo sélectionnée, l'unité sera listée ici.
+Temps de génération de la prévision météo en millisecondes
 
-daily=quotidien (Objet) Pour chaque variable météo quotidienne sélectionnée, les données seront renvoyées sous forme de tableau à virgule flottante. De plus untempstableau sera renvoyé avec les horodatages ISO8601.
+#### utc_offset_seconds (Entier)
 
-daily_units=unités_quotidiennes (Objet) Pour chaque variable météo quotidienne sélectionnée, l'unité sera listée ici.
+Décalage de fuseau horaire appliqué à partir du&fuseau horaire=paramètre.
 
-current_weather=météo actuelle (Objet) Conditions météorologiques actuelles avec les attributs :temps,température,vitesse du vent,direction du ventetcode météo
+#### timezone=fuseau horaire, timezone_abbreviation=timezone_abbreviation (Chaîne)
 
-weathercode :
+Identifiant de fuseau horaire (par exempleEurope/Berlin) et l'abréviation (par exempleCEST)
+
+#### hourly=toutes les heures (Objet)
+
+Pour chaque variable météo sélectionnée, les données seront renvoyées sous forme de tableau à virgule flottante. De plus untempstableau sera renvoyé avec les horodatages ISO8601.
+
+#### hourly_units=unités_horaires (Objet)
+
+Pour chaque variable météo sélectionnée, l'unité sera listée ici.
+
+#### daily=quotidien (Objet)
+
+Pour chaque variable météo quotidienne sélectionnée, les données seront renvoyées sous forme de tableau à virgule flottante. De plus untempstableau sera renvoyé avec les horodatages ISO8601.
+
+#### daily_units=unités_quotidiennes (Objet)
+
+Pour chaque variable météo quotidienne sélectionnée, l'unité sera listée ici.
+
+#### current_weather=météo actuelle (Objet)
+
+Conditions météorologiques actuelles avec les attributs :temps,température,vitesse du vent,direction du ventetcode météo
+
+#### weathercode :
+
 Codes d'interprétation météorologique de l'OMM (WW)
-Code Description
-0 Ciel clair
-1, 2, 3 Plutôt dégagé, partiellement nuageux et couvert
-45, 48 Brouillard et dépôt de brouillard givré
-51, 53, 55 Bruine : Intensité légère, modérée et dense
-56, 57 Bruine verglaçante : Intensité légère et dense
-61, 63, 65 Pluie : Intensité faible, modérée et forte
-66, 67 Pluie verglaçante : Intensité légère et forte
-71, 73, 75 Chute de neige : Intensité légère, modérée et forte
-77 Grains de neige
-80, 81, 82 Averses de pluie : Légères, modérées et violentes
-85, 86 Averses de neige légères et fortes
-95 _ Orage : Léger ou modéré
-96, 99 _ Orage avec grêle légère et forte
-(\*) La prévision d'orage avec grêle n'est disponible qu'en Europe centrale
+Code : Description
+
+> 0 Ciel clair
+> 1, 2, 3 Plutôt dégagé, partiellement nuageux et couvert
+> 45, 48 Brouillard et dépôt de brouillard givré
+> 51, 53, 55 Bruine : Intensité légère, modérée et dense
+> 56, 57 Bruine verglaçante : Intensité légère et dense
+> 61, 63, 65 Pluie : Intensité faible, modérée et forte
+> 66, 67 Pluie verglaçante : Intensité légère et forte
+> 71, 73, 75 Chute de neige : Intensité légère, modérée et forte
+> 77 Grains de neige
+> 80, 81, 82 Averses de pluie : Légères, modérées et violentes
+> 85, 86 Averses de neige légères et fortes
+> 95 _ Orage : Léger ou modéré
+> 96, 99 _ Orage avec grêle légère et forte
+> () La prévision d'orage avec grêle n'est disponible qu'en Europe centrale
